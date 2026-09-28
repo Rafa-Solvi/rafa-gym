@@ -73,7 +73,7 @@ async function loadCloudState(){
     await api('save',{state});
   }
   cloudReady=true;cloudUser={email:'PIN privado'};setStatus('Sincronizado ✓');nav();render();
-  window.addEventListener('online',()=>scheduleCloudSave(100),{once:true});
+  window.addEventListener('online',()=>scheduleCloudSave(100));
 }
 function scheduleCloudSave(delay=700){
   if(!cloudReady)return;
@@ -145,6 +145,7 @@ function exerciseEditor(e,i){const prev=lastSets(e.exercise);return `<div class=
 function persistDraft(){
   state.activeDraft=activeSession?clone(activeSession):null;
   save();
+  scheduleCloudSave(250);
 }
 function draftIsComplete(){
   return !!activeSession&&activeSession.exercises.every(e=>e.sets.every(s=>s.done&&s.reps!==''&&Number(s.reps)>0));
