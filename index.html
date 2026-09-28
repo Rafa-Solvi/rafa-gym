@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rafa Gym 12</title>
 <meta name="theme-color" content="#0b0d10">
+<meta name="application-name" content="Rafa Gym 12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rafa Gym 12">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon-192.svg" type="image/svg+xml">
 <style>
 :root{--bg:#0b0d10;--panel:#13171c;--panel2:#191e24;--line:#28303a;--text:#f3f5f7;--muted:#9da8b4;--accent:#79d18b;--accent2:#b8f1c4;--warn:#f2c96d;--bad:#ee7f7f;--shadow:0 16px 45px rgba(0,0,0,.28)}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
@@ -25,6 +31,7 @@ const INITIAL_DATA = {"appVersion":1,"profile":{"name":"Rafa","planStart":"2026-
 const STORE_KEY='rafaGym12_v3_cloud';
 const PIN_KEY='rafaGym12_pin';
 let cloudReady=false, syncTimer=null, syncing=false, cloudUser={email:'PIN privado'};
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(console.error));}
 
 function setStatus(msg){const el=document.getElementById('saveStatus');if(el)el.textContent=msg}
 async function api(action,payload={}){
