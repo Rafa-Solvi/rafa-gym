@@ -18,7 +18,37 @@
 main{max-width:1180px;margin:auto;padding:24px 20px 60px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{background:linear-gradient(180deg,var(--panel),#101419);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);font-weight:800}.h1{font-size:34px;line-height:1.05;letter-spacing:-.04em;margin:7px 0 8px;font-weight:900}.h2{font-size:20px;letter-spacing:-.02em;margin:0 0 12px}.muted{color:var(--muted)}.big{font-size:29px;font-weight:900;letter-spacing:-.04em}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;color:var(--muted);background:#0f1317}.pill.good{color:var(--accent2);border-color:#2d5a39;background:#102017}.pill.warn{color:var(--warn);border-color:#5d512f;background:#211d10}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.space{justify-content:space-between}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 14px;border-radius:11px;font-weight:700}.btn:hover{filter:brightness(1.08)}.btn.primary{background:var(--accent);color:#071109;border-color:var(--accent)}.btn.danger{color:#ffdada;border-color:#633;background:#251414}.btn.small{padding:7px 10px;font-size:13px}.btn.ghost{background:transparent}.sep{height:1px;background:var(--line);margin:16px 0}.metric{padding:16px}.metric .label{color:var(--muted);font-size:13px;margin-bottom:5px}.weekbar{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-top:16px}.wk{height:9px;border-radius:8px;background:#252c34}.wk.done{background:#3c8550}.wk.current{background:var(--accent);box-shadow:0 0 0 3px rgba(121,209,139,.12)}.wk.deload{background:#5e5534}.wk.current.deload{background:var(--warn)}
 .exercise{border:1px solid var(--line);border-radius:16px;padding:15px;margin:10px 0;background:#101419}.exercise h3{margin:0;font-size:16px}.target{font-size:13px;color:var(--muted)}.prev{margin-top:7px;font-size:13px;color:#c3cbd3}.suggest{margin-top:7px;font-size:13px;color:var(--accent2);font-weight:700}.sets{margin-top:12px;display:grid;gap:7px}.setrow{display:grid;grid-template-columns:38px 1fr 1fr 1fr 42px;gap:7px;align-items:center}.setrow input,.field input,.field select,.field textarea{width:100%;background:#0b0f13;border:1px solid var(--line);color:var(--text);padding:9px 10px;border-radius:9px}.setnum{font-weight:800;color:var(--muted);text-align:center}.check{width:22px;height:22px;accent-color:var(--accent)}.labels{font-size:10px;color:var(--muted);text-align:center}.exercise-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.history-item{border-bottom:1px solid var(--line);padding:13px 0}.history-item:last-child{border-bottom:0}.tag{font-size:11px;padding:3px 7px;border-radius:8px;background:#222b33;color:#cbd3db}.record{font-weight:800}.record.good{color:var(--accent2)}
 .table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px}.table th{color:var(--muted);font-weight:700}.plan-week{border:1px solid var(--line);border-radius:14px;margin:9px 0;overflow:hidden}.plan-week summary{padding:13px 14px;cursor:pointer;font-weight:800;background:#11161a}.plan-week.current summary{background:#14231a;color:var(--accent2)}.plan-body{padding:8px 14px 14px}.plan-routine{margin:10px 0}.plan-routine b{font-size:14px}.plan-routine div{font-size:12px;color:var(--muted);margin:3px 0}.field{margin:10px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}.modal-wrap.show{display:flex}.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}.notice{padding:12px 14px;border-radius:12px;background:#14231a;border:1px solid #294c34;color:#cfe9d5;font-size:13px}.notice.warn{background:#221e12;border-color:#5a4e2d;color:#f3dfa4}.empty{text-align:center;padding:30px;color:var(--muted)}canvas{width:100%;height:220px;background:#0e1216;border-radius:12px;border:1px solid var(--line)}.hide{display:none!important}.footer{margin-top:28px;color:#6e7984;font-size:12px;text-align:center}
-@media(max-width:850px){.c8,.c6,.c4,.c3{grid-column:span 12}.topinner{align-items:flex-start;flex-wrap:wrap}.nav{order:3;overflow-x:auto;width:100%}.nav button{white-space:nowrap}.h1{font-size:28px}.setrow{grid-template-columns:30px repeat(3,1fr) 36px}}
+@media(max-width:850px){
+  body{padding-bottom:78px}
+  main{padding:18px 14px 90px}
+  .c8,.c6,.c4,.c3{grid-column:span 12}
+  .topbar{position:sticky;top:0}
+  .topinner{padding:11px 14px;display:flex;align-items:center;flex-wrap:nowrap}
+  .brand{font-size:19px;white-space:nowrap}
+  .status{margin-left:auto;font-size:11px;text-align:right;max-width:120px}
+  .nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:80;
+    order:initial;width:100%;display:grid;grid-template-columns:repeat(5,1fr);
+    gap:0;padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+    background:rgba(11,13,16,.97);backdrop-filter:blur(16px);
+    border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.25)
+  }
+  .nav button{
+    min-width:0;padding:7px 2px 6px;border-radius:10px;white-space:normal;
+    font-size:10px;line-height:1.15;display:flex;flex-direction:column;align-items:center;gap:3px
+  }
+  .nav button .nav-icon{display:block;font-size:20px;line-height:20px}
+  .nav button .nav-label{display:block}
+  .h1{font-size:28px}
+  .big{font-size:26px}
+  .card{padding:15px;border-radius:15px}
+  .setrow{grid-template-columns:28px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 34px;gap:5px}
+  .setrow input{min-width:0;padding:9px 6px}
+  .exercise{padding:12px}
+  .exercise-head{gap:7px}
+  .exercise-head .btn{padding:7px 8px;font-size:11px}
+}
+@media(min-width:851px){.nav-icon{display:none}}
 </style>
 </head>
 <body><div class="app">
@@ -101,7 +131,20 @@ function currentWeek(){return Math.max(1,Math.min(12,Math.floor(daysBetween(stat
 function weekData(w=currentWeek()){return state.plan.find(x=>x.week===w)||state.plan[0]}
 function weekdayName(){return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][new Date().getDay()]}
 function routineToday(){return state.profile.weeklySchedule[weekdayName()]||'Descanso'}
-function nav(){const items=[['inicio','Inicio'],['entrenar','Entrenar'],['historial','Historial'],['plan','Plan 12 semanas'],['ajustes','Ajustes']];document.getElementById('nav').innerHTML=items.map(([k,n])=>`<button class="${k===currentView?'active':''}" onclick="go('${k}')">${n}</button>`).join('')}
+function nextStrengthSession(){
+  const names=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const todayIndex=new Date().getDay();
+  for(let offset=1;offset<=7;offset++){
+    const idx=(todayIndex+offset)%7;
+    const day=names[idx];
+    const routine=state.profile.weeklySchedule[day]||'Descanso';
+    if(routine.includes('Torso')||routine.includes('Pierna')){
+      return {day,routine,offset,nextWeek:todayIndex+offset>6};
+    }
+  }
+  return null;
+}
+function nav(){const items=[['inicio','⌂','Inicio'],['entrenar','＋','Entrenar'],['historial','◷','Historial'],['plan','▦','Plan'],['ajustes','⚙','Ajustes']];document.getElementById('nav').innerHTML=items.map(([k,ic,n])=>`<button class="${k===currentView?'active':''}" onclick="go('${k}')"><span class="nav-icon">${ic}</span><span class="nav-label">${n}</span></button>`).join('')}
 function go(v){currentView=v;activeSession=null;nav();render()}
 function render(){({inicio:renderHome,entrenar:renderTrain,historial:renderHistory,plan:renderPlan,ajustes:renderSettings}[currentView]||renderHome)()}
 function setCount(){return state.sessions.reduce((a,s)=>a+s.exercises.reduce((b,e)=>b+e.sets.filter(x=>!x.warmup).length,0),0)}
@@ -117,9 +160,10 @@ function draftProgress(){
   const all=activeSession.exercises.flatMap(e=>e.sets);
   return {done:all.filter(s=>s.done).length,total:all.length,routine:activeSession.routine};
 }
-function renderHome(){const w=currentWeek(),wd=weekData(w),today=routineToday(),last=lastMeaningfulSession();const doneWeeks=Math.max(0,w-1),isStrength=today.includes('Torso')||today.includes('Pierna'),todayDone=isStrength&&completedToday(today),draft=draftProgress();document.getElementById('main').innerHTML=`
+function renderHome(){const w=currentWeek(),wd=weekData(w),today=routineToday(),last=lastMeaningfulSession(),next=nextStrengthSession();const doneWeeks=Math.max(0,w-1),isStrength=today.includes('Torso')||today.includes('Pierna'),todayDone=isStrength&&completedToday(today),draft=draftProgress();document.getElementById('main').innerHTML=`
 <div class="grid"><section class="card c8"><div class="eyebrow">Plan activo</div><div class="h1">Semana ${w} de 12 ${wd.type==='Descarga'?'<span style="color:var(--warn)">· Descarga</span>':''}</div><div class="muted">Objetivo de la semana: RIR ${wd.rir}. ${wd.type==='Descarga'?'La mitad del volumen habitual: recuperar, no demostrar nada.':'Progresar repeticiones o carga manteniendo técnica.'}</div><div class="weekbar">${state.plan.map(x=>`<div title="Semana ${x.week}${x.type==='Descarga'?' · descarga':''}" class="wk ${x.week<w?'done':''} ${x.week===w?'current':''} ${x.type==='Descarga'?'deload':''}"></div>`).join('')}</div></section>
 <section class="card c4"><div class="eyebrow">Hoy · ${weekdayName()}</div><div class="big" style="margin-top:8px">${esc(today)}</div><div class="muted" style="margin:6px 0 14px">${isStrength?(todayDone?'Entrenamiento completado hoy.':(draft&&draft.routine===today?`Sesión en curso · ${draft.done}/${draft.total} series.`:'Sesión de fuerza programada.')):'Actividad del día según tu semana tipo.'}</div>${isStrength?(todayDone?`<span class="pill good">Completado ✓</span>`:`<button class="btn primary" onclick="currentView='entrenar';nav();renderTrain('${esc(today)}')">${draft&&draft.routine===today?'Continuar sesión':'Empezar sesión'}</button>`):''}</section>
+<section class="card c4"><div class="eyebrow">Siguiente entrenamiento</div>${next?`<div class="big" style="margin-top:8px">${esc(next.routine)}</div><div class="muted" style="margin:6px 0 14px">${next.offset===1?'Mañana · ':next.nextWeek?'Próxima semana · ':''}${esc(next.day)}</div><span class="pill">${weekData(next.nextWeek?Math.min(12,w+1):w).type==='Descarga'?'Descarga · ':''}Semana ${next.nextWeek?Math.min(12,w+1):w}</span>`:'<div class="muted">No hay otro entrenamiento programado.</div>'}</section>
 <section class="card c3 metric"><div class="label">Sesiones importadas/guardadas</div><div class="big">${state.sessions.length}</div></section><section class="card c3 metric"><div class="label">Series registradas</div><div class="big">${setCount()}</div></section><section class="card c3 metric"><div class="label">Sustituciones activas</div><div class="big">${state.substitutions.filter(x=>x.scope==='future').length}</div></section><section class="card c3 metric"><div class="label">Incidencias anotadas</div><div class="big">${state.issues.length}</div></section>
 <section class="card c6"><h2 class="h2">Última sesión</h2>${last?sessionMini(last):'<div class="empty">Aún no hay sesiones.</div>'}</section>
 <section class="card c6"><h2 class="h2">Cómo registrar el peso</h2><div class="notice">Barra: apunta el <b>peso total incluyendo la barra</b>. Mancuernas: apunta el <b>peso de una sola mancuerna</b>. Máquinas: el peso que marca la máquina.</div><div class="sep"></div><div class="muted">La app usa siempre esta convención para que tus progresiones sean comparables.</div></section>
