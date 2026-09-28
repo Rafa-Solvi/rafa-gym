@@ -67,7 +67,7 @@ async function unlockCloud(){
 async function loadCloudState(){
   setStatus('Sincronizando…');
   const out=await api('load');
-  if(out.state){state=out.state;localStorage.setItem(STORE_KEY,JSON.stringify(state))}
+  if(out.state){state=out.state;activeSession=state.activeDraft||null;localStorage.setItem(STORE_KEY,JSON.stringify(state))}
   else{
     state=loadState();
     await api('save',{state});
@@ -110,6 +110,13 @@ function bestForExercise(name){let best=null;for(const s of state.sessions)for(c
 function lastSets(name){const all=[];for(const s of state.sessions)for(const e of s.exercises)if(e.exercise===name&&e.sets.length)all.push({date:s.date,sets:e.sets});all.sort((a,b)=>b.date.localeCompare(a.date));return all[0]||null}
 function effectiveExercise(name){const subs=state.substitutions.filter(s=>s.original===name&&s.scope==='future');return subs.length?subs[subs.length-1].replacement:name}
 function suggestion(name,target){const last=lastSets(name);if(!last)return 'Empieza conservador: busca el RIR objetivo con técnica limpia.';const work=last.sets.filter(s=>!s.warmup&&s.weight>0);if(!work.length)return 'Usa una carga cómoda y ajusta por RIR.';const maxRep=Math.max(...work.map(s=>s.reps));const minRir=Math.min(...work.map(s=>s.rir??9));const same=work.every(s=>s.weight===work[0].weight);if(same&&work.every(s=>s.reps>=target.repsMax)&&minRir>=target.rir)return `Puedes probar un pequeño aumento sobre ${work[0].weight} kg.`;if(maxRep<target.repsMin)return `Mantén o baja ligeramente desde ${work[0].weight} kg hasta entrar en ${target.repsMin}-${target.repsMax} reps.`;return `Referencia: ${work[0].weight} kg. Intenta sumar reps sin bajar de RIR ${target.rir}.`}
+function baseRoutineName(s){return String(s?.routine||'').replace(/^S\d+\s*-\s*/,'')}
+function completedToday(routine){return state.sessions.some(s=>s.date===localDate()&&baseRoutineName(s)===routine)}
+function draftProgress(){
+  if(!activeSession||activeSession.date!==localDate())return null;
+  const all=activeSession.exercises.flatMap(e=>e.sets);
+  return {done:all.filter(s=>s.done).length,total:all.length,routine:activeSession.routine};
+}
 function renderHome(){const w=currentWeek(),wd=weekData(w),today=routineToday(),last=lastMeaningfulSession();const doneWeeks=Math.max(0,w-1);document.getElementById('main').innerHTML=`
 <div class="grid"><section class="card c8"><div class="eyebrow">Plan activo</div><div class="h1">Semana ${w} de 12 ${wd.type==='Descarga'?'<span style="color:var(--warn)">· Descarga</span>':''}</div><div class="muted">Objetivo de la semana: RIR ${wd.rir}. ${wd.type==='Descarga'?'La mitad del volumen habitual: recuperar, no demostrar nada.':'Progresar repeticiones o carga manteniendo técnica.'}</div><div class="weekbar">${state.plan.map(x=>`<div title="Semana ${x.week}${x.type==='Descarga'?' · descarga':''}" class="wk ${x.week<w?'done':''} ${x.week===w?'current':''} ${x.type==='Descarga'?'deload':''}"></div>`).join('')}</div></section>
 <section class="card c4"><div class="eyebrow">Hoy · ${weekdayName()}</div><div class="big" style="margin-top:8px">${esc(today)}</div><div class="muted" style="margin:6px 0 14px">${today.includes('Torso')||today.includes('Pierna')?'Sesión de fuerza programada.':'Actividad del día según tu semana tipo.'}</div>${today.includes('Torso')||today.includes('Pierna')?`<button class="btn primary" onclick="currentView='entrenar';nav();renderTrain('${esc(today)}')">Empezar sesión</button>`:''}</section>
