@@ -129,30 +129,77 @@ function localDate(){return new Date().toISOString().slice(0,10)}
 function daysBetween(a,b){return Math.floor((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000)}
 function currentWeek(){return Math.max(1,Math.min(12,Math.floor(daysBetween(state.profile.planStart,localDate())/7)+1))}
 function weekData(w=currentWeek()){return state.plan.find(x=>x.week===w)||state.plan[0]}
-function weekdayName(){return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][new Date().getDay()]}
-function routineToday(){return state.profile.weeklySchedule[weekdayName()]||'Descanso'}
+function datePlus(days){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
+function weekdayForDate(date){const d=new Date(date+'T12:00:00');return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][d.getDay()]}
+function weekdayName(){return weekdayForDate(localDate())}
+function baseActivityForDate(date){return state.profile.weeklySchedule[weekdayForDate(date)]||'Descanso'}
+function activityForDate(date){return state.scheduleOverrides?.[date]||baseActivityForDate(date)}
+function routineToday(){return activityForDate(localDate())}
+function isStrengthActivity(x){return String(x).includes('Torso')||String(x).includes('Pierna')}
+function runningInfoForDate(date){const day=weekdayForDate(date);return state.profile.runningPlan?.[day]||{type:'Suave',minutes:'35-50'}}
 function nextStrengthSession(){
-  const names=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-  const todayIndex=new Date().getDay();
-  for(let offset=1;offset<=7;offset++){
-    const idx=(todayIndex+offset)%7;
-    const day=names[idx];
-    const routine=state.profile.weeklySchedule[day]||'Descanso';
-    if(routine.includes('Torso')||routine.includes('Pierna')){
-      return {day,routine,offset,nextWeek:todayIndex+offset>6};
-    }
+  for(let offset=1;offset<=14;offset++){
+    const date=datePlus(offset),routine=activityForDate(date);
+    if(isStrengthActivity(routine))return {date,day:weekdayForDate(date),routine,offset,nextWeek:offset>(7-new Date().getDay())};
   }
   return null;
 }
+function openMoveSession(){
+  const from=localDate(),activity=activityForDate(from);
+  if(!isStrengthActivity(activity))return;
+  showModal(`<h2 class="h2">Cambiar entrenamiento de día</h2><div class="muted">Moverás <b>${esc(activity)}</b>. La actividad del día de destino pasará a hoy, así no pierdes ninguna sesión.</div><div class="field"><label>Nuevo día</label><input id="moveDate" type="date" min="${datePlus(1)}" max="${datePlus(14)}" value="${datePlus(1)}"></div><div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="applyMoveSession()">Cambiar día</button></div>`);
+}
+function applyMoveSession(){
+  const from=localDate(),to=document.getElementById('moveDate').value;
+  if(!to||to===from)return;
+  state.scheduleOverrides=state.scheduleOverrides||{};
+  const a=activityForDate(from),b=activityForDate(to);
+  state.scheduleOverrides[from]=b;
+  state.scheduleOverrides[to]=a;
+  save();closeModal();renderHome();
+}
 function nav(){const items=[['inicio','⌂','Inicio'],['entrenar','＋','Entrenar'],['historial','◷','Historial'],['plan','▦','Plan'],['ajustes','⚙','Ajustes']];document.getElementById('nav').innerHTML=items.map(([k,ic,n])=>`<button class="${k===currentView?'active':''}" onclick="go('${k}')"><span class="nav-icon">${ic}</span><span class="nav-label">${n}</span></button>`).join('')}
-function go(v){currentView=v;activeSession=null;nav();render()}
+function go(v){currentView=v;nav();render()}
 function render(){({inicio:renderHome,entrenar:renderTrain,historial:renderHistory,plan:renderPlan,ajustes:renderSettings}[currentView]||renderHome)()}
 function setCount(){return state.sessions.reduce((a,s)=>a+s.exercises.reduce((b,e)=>b+e.sets.filter(x=>!x.warmup).length,0),0)}
 function lastMeaningfulSession(){return [...state.sessions].sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0]}
 function bestForExercise(name){let best=null;for(const s of state.sessions)for(const e of s.exercises)if(e.exercise===name)for(const x of e.sets){if(x.warmup||!x.weight||!x.reps)continue;const e1=x.weight*(1+x.reps/30);if(!best||e1>best.e1)best={...x,e1,date:s.date}}return best}
 function lastSets(name){const all=[];for(const s of state.sessions)for(const e of s.exercises)if(e.exercise===name&&e.sets.length)all.push({date:s.date,sets:e.sets});all.sort((a,b)=>b.date.localeCompare(a.date));return all[0]||null}
 function effectiveExercise(name){const subs=state.substitutions.filter(s=>s.original===name&&s.scope==='future');return subs.length?subs[subs.length-1].replacement:name}
-function suggestion(name,target){const last=lastSets(name);if(!last)return 'Empieza conservador: busca el RIR objetivo con técnica limpia.';const work=last.sets.filter(s=>!s.warmup&&s.weight>0);if(!work.length)return 'Usa una carga cómoda y ajusta por RIR.';const maxRep=Math.max(...work.map(s=>s.reps));const minRir=Math.min(...work.map(s=>s.rir??9));const same=work.every(s=>s.weight===work[0].weight);if(same&&work.every(s=>s.reps>=target.repsMax)&&minRir>=target.rir)return `Puedes probar un pequeño aumento sobre ${work[0].weight} kg.`;if(maxRep<target.repsMin)return `Mantén o baja ligeramente desde ${work[0].weight} kg hasta entrar en ${target.repsMin}-${target.repsMax} reps.`;return `Referencia: ${work[0].weight} kg. Intenta sumar reps sin bajar de RIR ${target.rir}.`}
+function exerciseDef(name){return state.exercises.find(x=>x.name===name)||null}
+function trackingFor(name){return exerciseDef(name)?.tracking||'weight_reps'}
+function targetLabel(name,target){
+  const t=trackingFor(name);
+  if(t==='time')return `${target.sets} series · ${target.secondsMin||20}-${target.secondsMax||60} s`;
+  if(t==='reps')return `${target.sets} series · ${target.repsMin}-${target.repsMax} reps`;
+  return `${target.sets} series · ${target.repsMin}-${target.repsMax} reps · RIR ${target.rir}`;
+}
+function setLabel(name,s){
+  const t=trackingFor(name);
+  if(t==='time')return `${s.seconds||0} s`;
+  if(t==='reps')return `${s.reps||0} reps${s.rir!==undefined?' · RIR '+s.rir:''}`;
+  return `${s.weight||0} kg × ${s.reps||0}${s.rir!==undefined?' · RIR '+s.rir:''}`;
+}
+function suggestion(name,target){
+  const t=trackingFor(name),last=lastSets(name);
+  if(t==='time'){
+    if(!last)return `Empieza en ${target.secondsMin||20}-${target.secondsMax||60} segundos con técnica sólida.`;
+    const best=Math.max(...last.sets.map(s=>Number(s.seconds||0)));
+    return `Anterior: hasta ${best} s. Suma 5 s cuando completes todas las series con buena técnica.`;
+  }
+  if(t==='reps'){
+    if(!last)return `Empieza conservador dentro de ${target.repsMin}-${target.repsMax} repeticiones.`;
+    const best=Math.max(...last.sets.map(s=>Number(s.reps||0)));
+    return `Anterior: hasta ${best} reps. Intenta sumar repeticiones manteniendo control.`;
+  }
+  if(!last)return 'Empieza conservador: busca el RIR objetivo con técnica limpia.';
+  const work=last.sets.filter(s=>!s.warmup&&s.weight>0);
+  if(!work.length)return 'Usa una carga cómoda y ajusta por RIR.';
+  const maxRep=Math.max(...work.map(s=>s.reps));const minRir=Math.min(...work.map(s=>s.rir??9));const same=work.every(s=>s.weight===work[0].weight);
+  if(same&&work.every(s=>s.reps>=target.repsMax)&&minRir>=target.rir)return `Puedes probar un pequeño aumento sobre ${work[0].weight} kg.`;
+  if(maxRep<target.repsMin)return `Mantén o baja ligeramente desde ${work[0].weight} kg hasta entrar en ${target.repsMin}-${target.repsMax} reps.`;
+  return `Referencia: ${work[0].weight} kg. Intenta sumar reps sin bajar de RIR ${target.rir}.`;
+}
 function baseRoutineName(s){return String(s?.routine||'').replace(/^S\d+\s*-\s*/,'')}
 function completedToday(routine){return state.sessions.some(s=>s.date===localDate()&&baseRoutineName(s)===routine)}
 function draftProgress(){
